@@ -1,1 +1,102 @@
-<p>app-component-works!</p>
+<div class="container">
+  <div class="row" style="margin-top: 5%">
+    <div class="row">
+      <div class="text-center col-md-12">
+        <input
+          type="file"
+          #myInput
+          class="text-primary"
+          (change)="fileChangeEvent($event)"
+        />
+        <button class="btn btn-info" (click)="clear()">Clear</button>
+      </div>
+    </div>
+    <div class="row text-center p-2 m-2">
+      <div class="col-md-3">
+        <button (click)="rotateLeft()" class="mr-2 btn btn-dark">
+          Rotate left
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button (click)="rotateRight()" class="mr-2 btn btn-dark">
+          Rotate right
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button (click)="flipHorizontal()" class="mr-2 btn btn-dark">
+          Flip horizontal
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button (click)="flipVertical()" class="mr-2 btn btn-dark">
+          Flip vertical
+        </button>
+      </div>
+    </div>
+    <div class="row justify-content-center p-2 m-2">
+      <div class="col-md-3">
+        <button
+          (click)="toggleContainWithinAspectRatio()"
+          class="mr-2 btn btn-warning"
+        >
+          {{
+            containWithinAspectRatio
+              ? "Fill Aspect Ratio"
+              : "Contain Within Aspect Ratio"
+          }}
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button (click)="resetImage()" class="mr-2 btn btn-warning">
+          Reset Image
+        </button>
+      </div>
+    </div>
+    <div class="row justify-content-center p-2 m-2">
+      <div class="col-md-4">
+        <input
+          [(ngModel)]="rotation"
+          placeholder="Rotation"
+          class="form-control mr-2"
+          type="number"
+          (keyup)="updateRotation()"
+        />
+      </div>
+      <div class="col-md-8">
+        <button (click)="zoomOut()" class="mr-4 btn btn-success zoom-btn">
+          Zoom -
+        </button>
+        <button (click)="zoomIn()" class="mr-2 btn btn-success">Zoom +</button>
+      </div>
+    </div>
+  </div>
+  <div class="row" style="margin-top: 5%">
+    <div class="text-center col-md-8">
+      <h5>Crop Image</h5>
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [containWithinAspectRatio]="containWithinAspectRatio"
+        [aspectRatio]="4 / 3"
+        [resizeToWidth]="256"
+        [cropperMinWidth]="128"
+        [onlyScaleDown]="true"
+        [roundCropper]="false"
+        [canvasRotation]="canvasRotation"
+        [transform]="transform"
+        [alignImage]="'left'"
+        [style.display]="showCropper ? null : 'none'"
+        format="png"
+        (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded()"
+        (cropperReady)="cropperReady($event)"
+        (loadImageFailed)="loadImageFailed()"
+      >
+      </image-cropper>
+    </div>
+    <div class="text-center col-md-4">
+      <h5>Preview</h5>
+      <img [src]="croppedImage" />
+    </div>
+  </div>
+</div>
