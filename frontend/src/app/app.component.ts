@@ -40,6 +40,9 @@ export class AppComponent {
     // show message
     console.log('Load failed');
   }
+  previewSource() {
+    console.log('Preview source', this.croppedImage);
+  }
 
   clear() {
     this.croppedImage = '';
