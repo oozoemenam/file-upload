@@ -9,11 +9,16 @@ import {HttpEventType} from "@angular/common/http";
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit{
-  selectedFiles: FileList | null = null;
-  currentFile: File | null = null;
+  selectedFile: File | null = null;
   progress: number = 0;
   message: string = '';
   fileDetails!: Observable<any>;
+
+  selectedFiles: File[] = [];
+  selectedFileNames: string[] = [];
+  progressList: any[] = [];
+  previews: string[] = [];
+  messages: string[] = [];
 
   constructor(private uploadService: FileUploadService) {
   }
@@ -22,29 +27,51 @@ export class FileUploadComponent implements OnInit{
     this.fileDetails = this.uploadService.getFiles();
   }
 
-  selectFile(event: Event) {
-    this.selectedFiles = (event.target as HTMLInputElement).files!;
+  // selectFile(event: Event) {
+  //   this.selectedFiles = (event.target as HTMLInputElement).files!;
+  // }
+
+  selectFiles(event: any) {
+    this.messages = [];
+    this.progressList = [];
+    this.selectedFileNames = [];
+    this.selectedFiles = Array.from(event.target.files);
+    this.previews = [];
+    this.selectedFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        console.log(event.target.result);
+        this.previews.push(event.target.result);
+      }
+      reader.readAsDataURL(file);
+      this.selectedFileNames.push(file.name);
+    })
   }
 
-  upload() {
-    this.progress = 0;
-    this.currentFile = this.selectedFiles!.item(0);
-    this.uploadService.upload(this.currentFile!).subscribe(
+  upload(index: number, file: File) {
+    this.progressList[index] = { value: 0, fileName: file.name };
+    if (!file) return;
+    this.uploadService.upload(file).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress) {
-          this.progress = Math.round(100 * event.loaded / event.total!);
+          this.progressList[index].value = Math.round(100 * event.loaded / event.total!);
         } else if (event.type === HttpEventType.Response) {
-          this.message = event.body.message;
+          this.messages.push('File upload successful: ' + file.name);
           this.fileDetails = this.uploadService.getFiles();
         }
       },
       () => {
-        this.progress = 0;
-        this.message = 'Could not upload file';
-        this.currentFile = null;
-        return of([]);
+        this.progressList[index].value = 0;
+        this.messages.push('Could not upload file: ' + file.name);
       }
     );
-    this.selectedFiles = null;
+    // this.selectedFiles = null;
+  }
+
+  uploadFiles() {
+    this.messages = [];
+    this.selectedFiles.forEach((file, index) => {
+      this.upload(index, file);
+    })
   }
 }

@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 //@RequiredArgsConstructor
@@ -58,6 +59,16 @@ public class FileStorageService {
             }
         } catch (MalformedURLException e) {
             throw new FileNotFoundException("File not found " + fileName, e);
+        }
+    }
+
+    public Stream<Path> loadAllFiles() {
+        try {
+            return Files.walk(fileStorageLocation, 1)
+                    .filter(path -> !path.equals(fileStorageLocation))
+                    .map(fileStorageLocation::relativize);
+        } catch (IOException e) {
+            throw new FileNotFoundException("Could not load files");
         }
     }
 }

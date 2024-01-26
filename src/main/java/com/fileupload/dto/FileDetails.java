@@ -1,12 +1,15 @@
 package com.fileupload.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class FileUploadResponseDto {
+@RequiredArgsConstructor
+public class FileDetails {
+    @NonNull
     private String fileName;
+    @NonNull
     private String fileDownloadUri;
     private String fileType;
     private Long size;

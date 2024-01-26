@@ -1,34 +1,58 @@
-<div *ngIf="currentFile" class="progress">
-  <div
-    class="progress-bar progress-bar-info progress-bar-striped"
-    role="progressbar"
-    attr.aria-valuenow="{{ progress }}"
-    aria-valuemin="0"
-    aria-valuemax="100"
-    [ngStyle]="{ width: progress + '%' }"
-  >
-    {{ progress }}%
-  </div>
+<div *ngFor="let progressInfo of progressList">
+  <span>{{ progressInfo.fileName }}</span>
+  <mat-toolbar class="progress-bar">
+    <mat-progress-bar
+      [value]="progressInfo.value"
+    ></mat-progress-bar>
+    <span class="progress">{{ progressInfo.value }}%</span>
+  </mat-toolbar>
 </div>
 
-<label class="btn btn-default">
-  <input type="file" (change)="selectFile($event)" />
-</label>
+<mat-form-field>
+  <div>
+    <mat-toolbar>
+      <input class="filenames" matInput [value]="selectedFileNames.length ? selectedFileNames.join() : 'Select Images'" />
 
-<button class="btn btn-success" (click)="upload()">
-  Upload
-</button>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="!selectedFiles"
+        (click)="uploadFiles()"
+      >
+        Upload
+      </button>
+    </mat-toolbar>
 
-<div class="alert alert-light" role="alert">{{ message }}</div>
+    <input
+      type="file"
+      id="fileInput"
+      name="fileInput"
+      accept="image/*" multiple
+      (change)="selectFiles($event)"
+    />
+  </div>
+</mat-form-field>
 
-<div class="card">
-  <div class="card-header">List of Files</div>
-  <ul
-    class="list-group list-group-flush"
-    *ngFor="let file of fileDetails | async"
-  >
-    <li class="list-group-item">
-      <a href="{{ file.fileDownloadUri }}">{{ file.fileName }}</a>
-    </li>
+<div>
+  <img *ngFor='let preview of previews' [src]="preview" class="preview">
+</div>
+
+<div *ngIf="message.length" class="message">
+  <ul *ngFor="let msg of message; let i = index">
+    <li>{{ msg }}</li>
   </ul>
 </div>
+
+<mat-card class="list-card">
+  <mat-card-header>
+    <mat-card-title>List of Images</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list role="list">
+      <mat-list-item role="listitem" *ngFor="let image of fileDetails | async" class="list-item">
+        <p matLine><a href="{{ image.url }}">{{ image.name }}</a></p>
+        <img src="{{ image.url }}" alt="{{ image.name }}" height="50px"/>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
