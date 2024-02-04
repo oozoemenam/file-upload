@@ -9,6 +9,8 @@
           (change)="fileChangeEvent($event)"
         />
         <button class="btn btn-info" (click)="clear()">Clear</button>
+        <br />
+        <button class="btn btn-danger" (click)="uploadBlob()">Upload</button>
       </div>
     </div>
     <div class="row text-center p-2 m-2">
@@ -77,11 +79,9 @@
         [imageChangedEvent]="imageChangedEvent"
         [maintainAspectRatio]="true"
         [containWithinAspectRatio]="containWithinAspectRatio"
-        [aspectRatio]="4 / 3"
-        [resizeToWidth]="256"
-        [cropperMinWidth]="128"
+        [aspectRatio]="1 / 1"
         [onlyScaleDown]="true"
-        [roundCropper]="false"
+        [roundCropper]="true"
         [canvasRotation]="canvasRotation"
         [transform]="transform"
         [alignImage]="'left'"
@@ -91,6 +91,9 @@
         (imageLoaded)="imageLoaded()"
         (cropperReady)="cropperReady($event)"
         (loadImageFailed)="loadImageFailed()"
+        [output]="'blob'"
+        [resizeToWidth]="300"
+        [resizeToHeight]="300"
       >
       </image-cropper>
     </div>

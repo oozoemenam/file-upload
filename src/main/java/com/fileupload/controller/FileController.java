@@ -27,7 +27,7 @@ public class FileController {
 
     @PostMapping("/uploadFile")
     public FileDetails uploadFile(@RequestParam("file") MultipartFile file) {
-        System.out.println("uploadFile " + file);
+        log.info("upload file {} {} {} {} {} {}", file.getName(),file.getOriginalFilename(),file.getContentType(),file.isEmpty(),file.getSize(),file.getResource());
         String fileName = fileStorageService.storeFile(file);
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
